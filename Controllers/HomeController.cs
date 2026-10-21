@@ -10,6 +10,11 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    public IActionResult Expenses()
+    {
+        return View();
+    }
 
     public IActionResult Privacy()
     {
