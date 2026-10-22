@@ -27,10 +27,30 @@ public class HomeController : Controller
         return View(expenses);
     }
 
-    public IActionResult CreateEditExpense()
+    // id is optional — no id means create, an id means edit.
+    public IActionResult CreateEditExpense(int id = 0)
     {
-        // Pass an empty Expense so the hidden Id field renders as "0" instead of "".
-        return View(new Expense());
+        if (id == 0)
+            return View(new Expense());
+
+        var existing = _db.Expenses.Find(id);
+        if (existing == null)
+            return NotFound();
+
+        return View(existing);
+    }
+
+    [HttpPost]
+    public IActionResult DeleteExpense(int id)
+    {
+        var expense = _db.Expenses.Find(id);
+        if (expense != null)
+        {
+            _db.Expenses.Remove(expense);
+            _db.SaveChanges();
+        }
+
+        return RedirectToAction("Expenses");
     }
 
     // Receives the submitted form, saves the expense, then redirects back to the list.
