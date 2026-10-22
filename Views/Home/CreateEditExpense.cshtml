@@ -11,11 +11,8 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <form asp-controller="Home" asp-action="CreateEditExpenseForm" method="post">
-            <div class="mb-3">
-                <label asp-for="Id" class="form-label"></label>
-                <input asp-for="Id" class="form-control" type="number" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
+            @* Id is hidden — the database assigns it automatically on insert *@
+            <input asp-for="Id" type="hidden" />
             <div class="mb-3">
                 <label asp-for="Value" class="form-label"></label>
                 <input asp-for="Value" class="form-control" type="number" step="0.01" />

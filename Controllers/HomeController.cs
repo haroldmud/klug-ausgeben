@@ -39,11 +39,22 @@ public class HomeController : Controller
         if (!ModelState.IsValid)
             return View("CreateEditExpense", model);
 
-        // Id == 0 means it's a new expense (no existing ID assigned yet).
+        // Id == 0 means it's a new expense — let the database assign the Id.
         if (model.Id == 0)
+        {
             _db.Expenses.Add(model);
+        }
         else
-            _db.Expenses.Update(model);
+        {
+            // Load the existing row first, then apply changes.
+            // Calling Update() on an untracked entity with a non-existent Id causes a concurrency error.
+            var existing = _db.Expenses.Find(model.Id);
+            if (existing == null)
+                return NotFound();
+
+            existing.Value = model.Value;
+            existing.Description = model.Description;
+        }
 
         // Persist changes to the database file.
         _db.SaveChanges();
