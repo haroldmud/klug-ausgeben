@@ -23,13 +23,14 @@ public class HomeController : Controller
     // Load all expenses from the database and pass them to the view.
     public IActionResult Expenses()
     {
-        var expenses = _db.Expenses.ToList();
+        var expenses = _db.Expenses.ToList();   
         return View(expenses);
     }
 
     public IActionResult CreateEditExpense()
     {
-        return View();
+        // Pass an empty Expense so the hidden Id field renders as "0" instead of "".
+        return View(new Expense());
     }
 
     // Receives the submitted form, saves the expense, then redirects back to the list.
