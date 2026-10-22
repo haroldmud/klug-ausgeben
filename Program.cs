@@ -1,7 +1,15 @@
+using klug_ausgeben.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register AppDbContext as a service so controllers can receive it via dependency injection.
+// "Data Source=expenses.db" tells SQLite to store everything in a file called expenses.db.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=expenses.db"));
 
 var app = builder.Build();
 
