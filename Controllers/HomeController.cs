@@ -7,7 +7,7 @@ namespace klug_ausgeben.Controllers;
 
 public class HomeController : Controller
 {
-    // ASP.NET injects AppDbContext here automatically — no "new AppDbContext()" needed
+    // ASP.NET injects AppDbContext here automatically — no "new AppDbContext()" needed.
     private readonly AppDbContext _db;
 
     public HomeController(AppDbContext db)
