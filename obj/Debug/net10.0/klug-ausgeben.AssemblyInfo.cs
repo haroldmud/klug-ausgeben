@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("klug-ausgeben")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b84adf35deac143e7fa1726dafe25fdb77fb97c5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f76086668ae8ffc19b362afbda9dccda70dd714")]
 [assembly: System.Reflection.AssemblyProductAttribute("klug-ausgeben")]
 [assembly: System.Reflection.AssemblyTitleAttribute("klug-ausgeben")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
