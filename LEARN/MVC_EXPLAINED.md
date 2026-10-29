@@ -4,13 +4,11 @@
 
 MVC splits your app into three jobs so each piece only has **one reason to exist**:
 
-| Layer | Job | Asks itself |
-|-------|-----|-------------|
-| **Model** | Data + business rules | "What is the data and is it valid?" |
-| **View** | Display | "How does it look?" |
-| **Controller** | Traffic cop | "What should happen next?" |
-
----
+| Layer          | Job                   | Asks itself                         |
+| -------------- | --------------------- | ----------------------------------- |
+| **Model**      | Data + business rules | "What is the data and is it valid?" |
+| **View**       | Display               | "How does it look?"                 |
+| **Controller** | Traffic cop           | "What should happen next?"          |
 
 ## Controller — The Entry Point
 
@@ -23,12 +21,14 @@ User types: /Expenses/Create
 ```
 
 **Use a controller when you need to:**
+
 - Receive an HTTP request (GET, POST, etc.)
 - Decide which action to take
 - Call services or the database
 - Pass data to a view, or redirect somewhere
 
 **It should NOT:**
+
 - Contain business logic ("is this expense over budget?") — that belongs in a Model or service
 - Build HTML — that belongs in a View
 
@@ -51,6 +51,7 @@ The model represents **what your app works with** and **what makes it valid**.
 There are two flavors in ASP.NET MVC:
 
 ### 1. Domain Model (your actual data)
+
 ```csharp
 public class Expense
 {
@@ -62,6 +63,7 @@ public class Expense
 ```
 
 ### 2. ViewModel (shaped for a specific view)
+
 ```csharp
 public class ExpenseViewModel
 {
@@ -74,11 +76,13 @@ public class ExpenseViewModel
 ```
 
 **Use a Model when you need to:**
+
 - Define what a "thing" looks like (properties)
 - Add validation rules (`[Required]`, `[Range]`, etc.)
 - Shape data specifically for one screen (ViewModel)
 
 **It should NOT:**
+
 - Know about HTTP requests
 - Render HTML
 - Decide what page to show next
@@ -94,18 +98,20 @@ The view gets data from the controller and **only renders HTML**. That's it.
 @model ExpenseViewModel
 
 <form asp-action="Create">
-    <input asp-for="Title" />
-    <input asp-for="Amount" />
-    <button type="submit">Save</button>
+  <input asp-for="Title" />
+  <input asp-for="Amount" />
+  <button type="submit">Save</button>
 </form>
 ```
 
 **Use a View when you need to:**
+
 - Display data to the user
 - Build a form
 - Show a list, a page, a partial component
 
 **It should NOT:**
+
 - Query the database directly
 - Contain if-heavy business logic
 - Do calculations — format at most, never compute
@@ -127,6 +133,7 @@ The view gets data from the controller and **only renders HTML**. That's it.
 ```
 
 For a POST (form submit):
+
 ```
 [Browser] → POST /Expenses/Create (form data)
                  ↓
@@ -145,7 +152,7 @@ For a POST (form submit):
 
 > **Does it receive a request?** → Controller  
 > **Does it describe data or validate it?** → Model  
-> **Does it show something?** → View  
+> **Does it show something?** → View
 
 If your controller is long, you have business logic that belongs in a service or model.  
 If your view has C# logic beyond simple loops/ifs, you have logic that belongs in the controller or a ViewModel property.
