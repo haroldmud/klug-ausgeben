@@ -21,13 +21,13 @@ So `/Home/Expenses` → `HomeController` → `Expenses()`. No controller segment
 
 which means:
 - ASP.NET Core conventionally removes the Controller suffix from a controller class name. For example, `HomeController → Home`.
-- `{controller=Home}/{action=Index}/{id?}` in Program.cs defines the default route: when no controller or action is specified in the URL, ASP.NET Core uses Home and Index.
+- `{controller=Home}/{action=Index}/{id?}` in Program.cs defines the default route: when no controller or action is specified in the URL, ASP.NET Core uses Home and Index by default.
 - `public class HomeController : Controller` inherits functionality from the Controller base class due to the `: Controller`.
 - ASP.NET Core discovers the class as a controller because its name ends in Controller and it follows the controller discovery conventions.
 
 ---
 
-## The Constructor — Dependency Injection
+## The Constructor(Dependency Injection)
 
 ```csharp
 private readonly AppDbContext _db;
@@ -38,7 +38,38 @@ public HomeController(AppDbContext db)
 }
 ```
 
-The controller doesn't create its own database connection — ASP.NET builds one and passes it in when constructing the controller. This is **dependency injection**. It works because `Program.cs` registered `AppDbContext` as a service.
+- AppDbContext = the class that manages communication with the database.
+- _db = a variable that holds an instance of that class.
+- readonly = it can only be assigned during declaration or inside the constructor.
+
+```
+_db = db;       // Allowed (constructor)
+
+_db = another;  // Not allowed (inside another method)
+```
+
+`Program.cs` registers `AppDbContext` as a service, telling ASP.NET how to configure and create it; when HomeController needs it, ASP.NET automatically creates/provides an instance and passes it into the constructor (*Dependency Injection*), so the controller doesn't have to create or manage it itself. hence the `AppDbContext db`.
+
+```csharp
+.//Program.cs
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=expenses.db"));
+```
+
+```csharp
+// HomeController.cs
+    public class HomeController : Controller
+    {
+        // ASP.NET injects AppDbContext here automatically — no "new AppDbContext()" needed
+        private readonly AppDbContext _db;
+
+        public HomeController(AppDbContext db)
+        {
+            _db = db;
+        }
+    }
+```
 
 `_db.Expenses` is the `Expenses` table. Every database operation in the controller goes through it.
 
@@ -46,7 +77,7 @@ The controller doesn't create its own database connection — ASP.NET builds one
 
 ## The Actions
 
-### `Index()` — Home page
+### `Index()` - Home page
 
 ```csharp
 public IActionResult Index()
@@ -127,6 +158,9 @@ public IActionResult CreateEditExpenseForm(Expense model)
 
 This is what runs when the user hits **Save**. ASP.NET reads the submitted form fields and populates the `Expense` parameter automatically — this is called **model binding**.
 
+- [HttpPost] is an attribute that tells ASP.NET this action should only handle HTTP POST requests. it could work without [HttpPost], but it's not recommended.
+- `ModelState` is an object ASP.NET maintains during a request. It contains The values submitted by the user, the type or/and the validation errors. `!ModelState.IsValid` means is the submitted data valid.
+
 Three steps happen in order:
 
 **1. Validate.** `ModelState.IsValid` checks the rules on the `Expense` model (`[Required]`, etc.). If invalid, it returns the form again with errors — the user sees what went wrong.
@@ -157,6 +191,10 @@ public IActionResult DeleteExpense(int id)
 `[HttpPost]` means this action only responds to POST requests — a URL typed in the browser (GET) won't trigger it. The delete button in `Expenses.cshtml` is a small form that POSTs the `id` here.
 
 If the row doesn't exist, it does nothing and redirects cleanly rather than crashing.
+
+Without the `[HttpsPost]`, things may still work, but the action won't be restricted to POST requests and could be triggered by a GET request.
+
+Standard HTML forms only support GET and POST, not PUT, PATCH, or DELETE. that's why we only have [HttpPost] on both Delete and Create
 
 ---
 
